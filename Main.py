@@ -1,107 +1,66 @@
-from flask import Flask, jsonify, request, session
-from flask_mysqldb import MySQL  # Ensure this is installed
-import pymysql
-from Config import mysql  # Ensure that mysql is initialized in Config.py
+from flask import Flask, request, jsonify
+from Config import app, mysql
 
-app = Flask(__name__)
-
-# Secret key for session management (use a secure random key in production)
-app.secret_key = 'your_secret_key'
-
-# Home route
-@app.route('/')
-def home():
-    return jsonify({'message': 'Welcome to the API!'})
-
-# User Registration
 @app.route('/register', methods=['POST'])
-def register_user():
-    conn = None
-    cursor = None
+def register():
     try:
-        # Validate input data
-        _json = request.json
-        if not all(key in _json for key in ('name', 'email', 'phone', 'password')):
-            return jsonify({'message': 'Missing required fields!'}), 400
+        # Retrieve data from request
+        data = request.json
+        name = data.get('name')
+        email = data.get('email')
+        phone = data.get('phone')
+        password = data.get('password')
 
-        _name = _json['name']
-        _email = _json['email']
-        _phone = _json['phone']
-        _password = _json['password']
-
-        # Check if user already exists
-        conn = mysql.connect()
-        cursor = conn.cursor(pymysql.cursors.DictCursor)
-        cursor.execute("SELECT * FROM Users WHERE email = %s", (_email,))
-        existing_user = cursor.fetchone()
-
-        if existing_user:
-            return jsonify({'message': 'User already exists!'}), 400
+        # Check if all fields are provided
+        if not all([name, email, phone, password]):
+            return jsonify({'error': 'Please provide all required fields'}), 400
 
         # Insert new user into the database
-        sqlQuery = "INSERT INTO Users(name, email, phone, password) VALUES(%s, %s, %s, %s)"
-        bindData = (_name, _email, _phone, _password)  # Consider hashing the password
-        cursor.execute(sqlQuery, bindData)
+        conn = mysql.connection
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO Users (name, email, phone, password) VALUES (%s, %s, %s, %s)",
+                       (name, email, phone, password))
         conn.commit()
 
-        response = jsonify({'message': 'User registered successfully!'})
-        response.status_code = 201
-        return response
-    except Exception as err:
-        print(f"Error: {err}")  # Log the error for debugging
-        return jsonify({'message': 'An error occurred during registration!'}), 500
+        return jsonify({'message': 'User registered successfully'}), 201
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Registration failed'}), 500
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        cursor.close() if cursor else None
+        conn.close() if conn else None
 
-# User Login
+
 @app.route('/login', methods=['POST'])
-def login_user():
-    conn = None
-    cursor = None
+def login():
     try:
-        # Validate input data
-        _json = request.json
-        if not all(key in _json for key in ('email', 'password')):
-            return jsonify({'message': 'Missing required fields!'}), 400
+        # Retrieve data from request
+        data = request.json
+        email = data.get('email')
+        password = data.get('password')
 
-        _email = _json['email']
-        _password = _json['password']
+        # Check if required fields are provided
+        if not all([email, password]):
+            return jsonify({'error': 'Please provide email and password'}), 400
 
-        conn = mysql.connect()
-        cursor = conn.cursor(pymysql.cursors.DictCursor)
-        cursor.execute("SELECT * FROM Users WHERE email = %s", (_email,))
+        # Retrieve user data from the database
+        conn = mysql.connection
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM Users WHERE email = %s AND password = %s", (email, password))
         user = cursor.fetchone()
 
-        if user and _password == user['password']:  # Compare plain text password
-            # Store user info in session if needed
-            session['user_id'] = user['user_id']
-            response = jsonify({'message': 'Login successful!'})
-            response.status_code = 200
-            return response
+        # Check if user exists
+        if user:
+            return jsonify({'message': 'Login successful', 'user': {'user_id': user['user_id'], 'name': user['name']}}), 200
         else:
-            return jsonify({'message': 'Invalid email or password!'}), 401
-    except Exception as err:
-        print(f"Error: {err}")  # Log the error for debugging
-        return jsonify({'message': 'An error occurred during login!'}), 500
+            return jsonify({'error': 'Invalid email or password'}), 401
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Login failed'}), 500
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        cursor.close() if cursor else None
+        conn.close() if conn else None
 
-# Handle 404 errors
-@app.errorhandler(404)
-def show_message(error=None):
-    message = {
-        'status': 404,
-        'message': 'Record not found: ' + request.url,
-    }
-    response = jsonify(message)
-    response.status_code = 404
-    return response
-
+# Run the app
 if __name__ == "__main__":
     app.run(debug=True)
