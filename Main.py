@@ -26,35 +26,33 @@ def register():
 
     conn = mysql.connection
     cursor = conn.cursor()
-    try:
-        # Determine if the new user is a courier and should be assigned a specific user_id
-        if role == 'courier':
-            user_id = 20  # This assumes you want all couriers to have the same ID
-            # Attempt to insert or ignore if exists (this logic might need a better approach)
-            cursor.execute("""
-                INSERT INTO Users (user_id, name, email, phone, password, role)
-                VALUES (%s, %s, %s, %s, %s, %s)
-                ON DUPLICATE KEY UPDATE name=%s, email=%s, phone=%s, password=%s, role=%s
-            """, (user_id, name, email, phone, password, role, name, email, phone, password, role))
-        else:
-            cursor.execute("""
-                INSERT INTO Users (name, email, phone, password, role)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (name, email, phone, password, role))
-            user_id = cursor.lastrowid
 
-        conn.commit()
+    # Begin transaction
+    conn.start_transaction()
+
+    try:
+        # Insert the new user into Users table
+        cursor.execute("""
+            INSERT INTO Users (name, email, phone, password, role)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (name, email, phone, password, role))
+        user_id = cursor.lastrowid  # Retrieve the ID of the newly inserted user
 
         if role == 'courier':
             # Insert the new courier into the Couriers table with the default courier name 'DHL'
-            cursor.execute("INSERT INTO Couriers (courier_id, courier_name) VALUES (%s, %s)", (user_id, 'DHL'))
-            conn.commit()
+            cursor.execute("""
+                INSERT INTO Couriers (courier_id, courier_name)
+                VALUES (%s, %s)
+            """, (user_id, 'DHL'))
 
+        conn.commit()  # Commit the transaction if all operations were successful
         return jsonify({'message': 'User registered successfully'}), 201
+
     except Exception as e:
         print("Error during registration:", e)
-        conn.rollback()
+        conn.rollback()  # Roll back the transaction on error
         return jsonify({'error': str(e)}), 500
+
     finally:
         cursor.close()
         conn.close()
