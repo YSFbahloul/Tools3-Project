@@ -1,0 +1,70 @@
+/* Overall container styling */
+div {
+  font-family: Arial, sans-serif; /* Sets a clean, modern font */
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+
+/* Headings */
+h2, h3 {
+  color: #333; /* Dark grey color for text */
+}
+
+/* Form styling */
+form {
+  margin-bottom: 20px;
+  background: #f9f9f9; /* Light grey background */
+  padding: 15px;
+  border: 1px solid #ccc; /* Light grey border */
+  border-radius: 8px; /* Rounded corners */
+}
+
+/* Labels and input fields */
+label {
+  display: block; /* Makes the label a block to force the input onto a new line */
+  margin: 10px 0 5px;
+}
+
+input[type="number"] {
+  width: 100%; /* Full width */
+  padding: 8px;
+  margin-bottom: 10px; /* Space below the input */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Button styling */
+button {
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+/* Order details styling */
+/* Order details styling */
+.order-details {
+  background: #e7f5e9; /* Very light green background */
+  border: 1px solid #b2d8b0; /* Matching green border */
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+/* Error message styling */
+.error {
+  color: #ff0000; /* Red color for errors */
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #fff0f0; /* Very light red background */
+  border: 1px solid #ffcccc; /* Light red border */
+  border-radius: 5px;
+}

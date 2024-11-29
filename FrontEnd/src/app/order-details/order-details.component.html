@@ -1,0 +1,27 @@
+<div>
+  <h2>Enter Order ID to View Order Details</h2>
+  <form (ngSubmit)="getOrderDetails()">
+    <label for="orderId">Order ID:</label>
+    <input type="number" id="orderId" [(ngModel)]="orderId" name="orderId" required />
+    <button type="submit">Get Order Details</button>
+  </form>
+
+ <!-- Show order details if available -->
+<!-- Show order details if available -->
+<div>
+  <h3>Order Details</h3>
+  <p><strong>Order ID:</strong> {{ order?.order_id }}</p>
+  <p><strong>User ID:</strong> {{ order?.user_id }}</p>
+  <p><strong>Product ID:</strong> {{ order?.product_id }}</p>
+  <p><strong>Delivery Address:</strong> {{ order?.delivery_address }}</p>
+  <p><strong>Email:</strong> {{ order?.email }}</p>
+  <p><strong>Status:</strong> {{ order?.status }}</p>
+  <p><strong>Courier:</strong> {{ order?.courier }}</p>
+
+  <!-- Display error message regardless -->
+  <div class="error">
+    <p>{{ errorMessage }}</p>
+  </div>
+</div>
+
+</div>

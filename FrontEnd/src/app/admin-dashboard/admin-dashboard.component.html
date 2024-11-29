@@ -1,0 +1,36 @@
+<div class="admin-dashboard">
+  <h2>Admin Dashboard</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>User ID</th>
+        <th>Email</th>
+        <th>Product ID</th>
+        <th>Delivery Address</th>
+        <th>Status</th>
+        <th>Courier</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of allOrders">
+        <td>{{ order.order_id }}</td>
+        <td>{{ order.user_id }}</td>
+        <td>{{ order.email }}</td>
+        <td>{{ order.product_id }}</td>
+        <td>{{ order.delivery_address }}</td>
+        <td>{{ order.order_status }}</td>
+        <td>{{ order.courier }}</td>
+        <td>
+          <input type="text" [value]="order.newCourierId" 
+                 (input)="order.newCourierId = $any($event.target).value" placeholder="New Courier ID">
+          <button (click)="reassignOrder(order.order_id, order.newCourierId)">Reassign</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="allOrders.length === 0">
+    No orders found.
+  </div>
+</div>

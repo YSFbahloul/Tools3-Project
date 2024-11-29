@@ -1,0 +1,14 @@
+<div class="order-form">
+    <form [formGroup]="orderForm" (ngSubmit)="onSubmitOrder()">
+        <label for="email">Email:</label>
+        <input id="email" type="email" formControlName="email" required placeholder="Enter your email">
+
+        <label for="product_id">Product ID:</label>
+        <input id="product_id" type="text" formControlName="product_id" required placeholder="Enter product ID">
+
+        <label for="delivery_address">Delivery Address:</label>
+        <input id="delivery_address" type="text" formControlName="delivery_address" required placeholder="Enter delivery address">
+
+        <button type="submit" [disabled]="!orderForm.valid">Submit Order</button>
+    </form>
+</div>

@@ -1,0 +1,32 @@
+<div class="courier-dashboard">
+  <h2>Courier Dashboard</h2>
+  <table *ngIf="orders.length > 0; else noOrdersTemplate">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Product ID</th>
+        <th>Delivery Address</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders">
+        <td>{{ order.order_id }}</td>
+        <td>{{ order.product_id }}</td>
+        <td>{{ order.delivery_address }}</td>
+        <td>{{ order.status }}</td>
+        <td>
+          <button *ngIf="order.status === 'accepted'" (click)="pickUpOrder(order.order_id)">Pick Up</button>
+          <button *ngIf="order.status === 'pending'" (click)="acceptOrder(order.order_id)">Accept</button>
+          <button *ngIf="order.status === 'pending'" (click)="rejectOrder(order.order_id)">Reject</button>
+          <button *ngIf="order.status === 'picked up'" (click)="deliverOrder(order.order_id)">Deliver</button>
+          <button *ngIf="order.status === 'delivered'" (click)="transitOrder(order.order_id)">Transit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #noOrdersTemplate>
+    <p>No orders assigned.</p>
+  </ng-template>
+</div>

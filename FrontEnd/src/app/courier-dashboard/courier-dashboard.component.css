@@ -1,0 +1,32 @@
+.courier-dashboard h2 {
+  color: navy;
+}
+
+.courier-dashboard table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.courier-dashboard th, .courier-dashboard td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.courier-dashboard th {
+  background-color: #f2f2f2;
+}
+
+.courier-dashboard button {
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+  background-color: lightblue;
+  border: none;
+  border-radius: 5px;
+}
+
+.courier-dashboard button:hover {
+  background-color: deepskyblue;
+}

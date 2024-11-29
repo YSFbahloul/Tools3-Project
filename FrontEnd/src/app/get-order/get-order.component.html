@@ -1,0 +1,22 @@
+<div class="orders-container">
+  <h2>My Orders</h2>
+
+  <!-- Message for no orders or error -->
+  <p *ngIf="message" class="message">{{ message }}</p>
+
+  <!-- List orders if available -->
+  <ul *ngIf="orders.length > 0; else noOrdersTemplate">
+    <li *ngFor="let order of orders">
+      <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+      <p><strong>Product ID:</strong> {{ order.product_id }}</p>
+      <p><strong>Delivery Address:</strong> {{ order.delivery_address }}</p>
+      <p><strong>Status:</strong> {{ order.status }}</p>
+      <button (click)="cancelOrder(order.order_id)" *ngIf="order.status === 'pending'">Cancel Order</button>
+    </li>
+  </ul>
+
+  <!-- Show this if no orders exist -->
+  <ng-template #noOrdersTemplate>
+    <p>No orders found.</p>
+  </ng-template>
+</div>

@@ -1,0 +1,13 @@
+/* src/app/cancel-order/cancel-order.component.css */
+button {
+    padding: 8px 16px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #d32f2f;
+  }
+  
